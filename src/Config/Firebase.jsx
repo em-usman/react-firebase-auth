@@ -1,8 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
-import { getFirestore } from "firebase/firestore"
-import { getStorage } from "firebase/storage"
-
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCp2H5ZV-XKV5ZqjaCzTjL8TzlpNPz3OfQ",
@@ -17,5 +14,18 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
-export const db = getFirestore(app);
-export const storage = getStorage(app);
+
+// Google Sign-In
+export const signInWithGoogle = async () => {
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+    return result.user;
+  } catch (error) {
+    if (error.code === 'auth/popup-closed-by-user') {
+      console.error('The popup was closed before completing the sign-in.');
+    } else {
+      console.error(error);
+    }
+    throw error;
+  }
+};
